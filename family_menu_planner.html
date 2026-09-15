@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>家常菜菜单</title>
+<style>
+:root {
+  --bg:#f6f4ef; --paper:#fffdf9; --ink:#25231f; --muted:#777168;
+  --accent:#355d3c; --accent-soft:#e7efe7; --line:#e7e0d6; --warm:#b4653c;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0; font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+  background:var(--bg); color:var(--ink);
+}
+.app { max-width:1100px; margin:0 auto; min-height:100vh; background:var(--paper); }
+header {
+  padding:28px 28px 18px; border-bottom:1px solid var(--line);
+  position:sticky; top:0; background:rgba(255,253,249,.96); backdrop-filter:blur(10px); z-index:5;
+}
+h1 { margin:0 0 14px; font-size:28px; }
+.nav { display:flex; gap:8px; flex-wrap:wrap; }
+.nav button, .menu-tab {
+  border:1px solid var(--line); background:white; color:var(--ink); padding:9px 14px;
+  border-radius:999px; cursor:pointer; font-size:14px;
+}
+.nav button.active, .menu-tab.active { background:var(--accent); color:white; border-color:var(--accent); }
+main { padding:28px; }
+.page { display:none; }
+.page.active { display:block; }
+.page h2 { margin-top:0; font-size:23px; }
+.page-note { color:var(--muted); margin-top:-8px; margin-bottom:22px; }
+.grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:12px;
+}
+.dish-card {
+  min-height:92px; text-align:left; border:1px solid var(--line); background:white; border-radius:16px;
+  padding:16px; cursor:pointer; transition:.18s ease;
+}
+.dish-card:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,.07); }
+.dish-card span { display:block; font-weight:700; font-size:16px; margin-bottom:8px; }
+.dish-card small { color:var(--muted); }
+.ingredient-group { margin-bottom:26px; }
+.ingredient-group h3 { margin-bottom:10px; }
+.chips { display:flex; flex-wrap:wrap; gap:8px; }
+.chip { padding:8px 11px; background:var(--accent-soft); border-radius:10px; font-size:14px; }
+.menu-tabs { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px; }
+.menu-panel { display:none; }
+.menu-panel.active { display:grid; gap:12px; }
+.day-card {
+  display:grid; grid-template-columns:90px 1fr; gap:16px; align-items:center;
+  border:1px solid var(--line); border-radius:16px; padding:16px; background:white;
+}
+.day { font-weight:800; color:var(--accent); font-size:18px; }
+.day-dishes { display:flex; gap:8px; flex-wrap:wrap; }
+.inline-dish {
+  border:0; background:#f2eee7; padding:9px 12px; border-radius:10px; cursor:pointer;
+}
+.inline-dish:hover { background:#e9e1d6; }
+.modal {
+  display:none; position:fixed; inset:0; background:rgba(20,20,20,.38); z-index:20;
+  align-items:center; justify-content:center; padding:20px;
+}
+.modal.open { display:flex; }
+.modal-card {
+  width:min(520px,100%); background:white; border-radius:18px; padding:22px; box-shadow:0 24px 70px rgba(0,0,0,.22);
+}
+.modal-top { display:flex; justify-content:space-between; gap:10px; align-items:center; }
+.modal h3 { margin:0; font-size:22px; }
+.close { border:0; background:#f1eee8; border-radius:999px; width:34px; height:34px; cursor:pointer; font-size:18px; }
+.modal ul { padding-left:20px; line-height:1.9; }
+.badge { display:inline-block; margin-top:8px; padding:5px 9px; background:var(--accent-soft); color:var(--accent); border-radius:999px; font-size:12px; }
+footer { padding:20px 28px 34px; color:var(--muted); font-size:13px; }
+@media (max-width:640px) {
+  header, main, footer { padding-left:18px; padding-right:18px; }
+  .day-card { grid-template-columns:1fr; gap:8px; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <h1>家常菜菜单</h1>
+  <nav class="nav">
+    <button class="active" data-page="ingredients">原料</button>
+    <button data-page="mains">主菜</button>
+    <button data-page="sides">配菜</button>
+    <button data-page="week">周一至周五菜单</button>
+  </nav>
+</header>
+
+<main>
+  <section id="ingredients" class="page active">
+    <h2>原料页</h2>
+    <p class="page-note">按类别查看这一套家常菜常用原料。</p>
+    <section class="ingredient-group"><h3>肉类</h3><div class="chips"><span class="chip">猪大排</span><span class="chip">梅花肉</span><span class="chip">猪肉丝</span><span class="chip">猪肉片</span><span class="chip">猪肉末</span><span class="chip">牛腩</span><span class="chip">鸡翅</span></div></section><section class="ingredient-group"><h3>鱼虾</h3><div class="chips"><span class="chip">鲈鱼</span><span class="chip">黄鱼</span><span class="chip">黑鱼片</span><span class="chip">虾仁</span></div></section><section class="ingredient-group"><h3>蛋和豆制品</h3><div class="chips"><span class="chip">鸡蛋</span><span class="chip">豆腐</span><span class="chip">香干</span></div></section><section class="ingredient-group"><h3>蔬菜</h3><div class="chips"><span class="chip">白萝卜</span><span class="chip">土豆</span><span class="chip">豆角</span><span class="chip">豇豆</span><span class="chip">四季豆</span><span class="chip">芹菜</span><span class="chip">青椒</span><span class="chip">茭白</span><span class="chip">毛豆</span><span class="chip">番茄</span><span class="chip">香菇</span><span class="chip">青菜</span><span class="chip">花菜</span><span class="chip">西兰花</span><span class="chip">蘑菇</span><span class="chip">洋葱</span><span class="chip">西葫芦</span><span class="chip">茄子</span><span class="chip">冬瓜</span></div></section><section class="ingredient-group"><h3>基础调味</h3><div class="chips"><span class="chip">葱</span><span class="chip">姜</span><span class="chip">蒜</span><span class="chip">生抽</span><span class="chip">老抽</span><span class="chip">蚝油</span><span class="chip">料酒</span><span class="chip">糖</span><span class="chip">盐</span><span class="chip">淀粉</span><span class="chip">蒸鱼豉油</span></div></section>
+  </section>
+
+  <section id="mains" class="page">
+    <h2>主菜</h2>
+    <p class="page-note">点击任意菜名，可以查看主要原料。</p>
+    <div class="grid"><button class="dish-card" data-dish="葱烤大排"><span>葱烤大排</span><small>点击查看原料</small></button>
+<button class="dish-card" data-dish="梅花肉烧萝卜"><span>梅花肉烧萝卜</span><small>点击查看原料</small></button>
+<button class="dish-card" data-dish="梅花肉烧土豆"><span>梅花肉烧土豆</span><small>点击查看原料</small></button>
+<button class="dish-card" data-dish="梅花肉烧豆角"><span>梅花肉烧豆角</span><small>点击查看原料</small></button>
+<button class="dish-card" data-dish="花菜炒梅花肉片"><span>花菜炒梅花肉片</span><small>点击查看原料</small></button>
+<button class="dish-card" data-dish="芹菜香干肉丝"><span>芹菜香干肉丝</span><small>点击查看原料</small></button>
+<button class="dish-card" data-dish="青椒肉丝"><span>青椒肉丝</span><small>点击查看原料</small></button>
+<button class="dish-card" data-dish="茭白毛豆肉丝"><span>茭白毛豆肉丝</span><small>点击查看原料</small></button>
+<button class="dish-card" data-dish="洋葱炒肉丝"><span>洋葱炒肉丝</span><small>点击查看原料</small></button>
+<button class="dish-card" data-dish="西葫芦炒肉片"><span>西葫芦炒肉片</span><small>点击查看原料</small></button>
+<button class="dish-card" data-dish="肉末豆腐"><span>肉末豆腐</span><small>点击查看原料</small></button>
+<button class="dish-card" data-dish="肉末茄子"><span>肉末茄子</span><small>点击查看原料</small></button>
+<button class="dish-card" data-dish="肉末豇豆"><span>肉末豇豆</span><small>点击查看原料</small></button>
+<button class="dish-card" data-dish="肉末粉丝"><span>肉末粉丝</span><small>点击查看原料</small></button>
+<button class="dish-card" data-dish="肉末炒四季豆"><span>肉末炒四季豆</span><small>点击查看原料</small></button>
+<button class="dish-card" data-dish="肉末烧冬瓜"><span>肉末烧冬瓜</span><small>点击查看原料</small></button>
+<button class="dish-card" data-dish="萝卜炖牛腩"><span>萝卜炖牛腩</span><small>点击查看原料</small></button>
+<button class="dish-card" data-dish="红烧鸡翅"><span>红烧鸡翅</span><small>点击查看原料</small></button>
+<button class="dish-card" data-dish="清蒸鲈鱼"><span>清蒸鲈鱼</span><small>点击查看原料</small></button>
+<button class="dish-card" data-dish="红烧鲈鱼"><span>红烧鲈鱼</span><small>点击查看原料</small></button>
+<button class="dish-card" data-dish="红烧黄鱼"><span>红烧黄鱼</span><small>点击查看原料</small></button>
+<button class="dish-card" data-dish="番茄黑鱼片"><span>番茄黑鱼片</span><small>点击查看原料</small></button>
+<button class="dish-card" data-dish="芹菜炒虾仁"><span>芹菜炒虾仁</span><small>点击查看原料</small></button>
+<button class="dish-card" data-dish="西兰花炒虾仁"><span>西兰花炒虾仁</span><small>点击查看原料</small></button>
+<button class="dish-card" data-dish="西葫芦炒虾仁"><span>西葫芦炒虾仁</span><small>点击查看原料</small></button></div>
+  </section>
+
+  <section id="sides" class="page">
+    <h2>配菜</h2>
+    <p class="page-note">偏蔬菜、鸡蛋和豆制品，适合搭配主菜。</p>
+    <div class="grid"><button class="dish-card" data-dish="番茄炒蛋"><span>番茄炒蛋</span><small>点击查看原料</small></button>
+<button class="dish-card" data-dish="家常香菇烧豆腐"><span>家常香菇烧豆腐</span><small>点击查看原料</small></button>
+<button class="dish-card" data-dish="香菇青菜"><span>香菇青菜</span><small>点击查看原料</small></button>
+<button class="dish-card" data-dish="豇豆烧豆腐"><span>豇豆烧豆腐</span><small>点击查看原料</small></button>
+<button class="dish-card" data-dish="花菜烧豆腐"><span>花菜烧豆腐</span><small>点击查看原料</small></button>
+<button class="dish-card" data-dish="番茄花菜"><span>番茄花菜</span><small>点击查看原料</small></button>
+<button class="dish-card" data-dish="西兰花炒蘑菇"><span>西兰花炒蘑菇</span><small>点击查看原料</small></button>
+<button class="dish-card" data-dish="西兰花炒鸡蛋"><span>西兰花炒鸡蛋</span><small>点击查看原料</small></button>
+<button class="dish-card" data-dish="洋葱炒鸡蛋"><span>洋葱炒鸡蛋</span><small>点击查看原料</small></button>
+<button class="dish-card" data-dish="西葫芦炒鸡蛋"><span>西葫芦炒鸡蛋</span><small>点击查看原料</small></button></div>
+  </section>
+
+  <section id="week" class="page">
+    <h2>周一至周五菜单</h2>
+    <p class="page-note">3 个版本，每天 3 个菜。三个版本合起来覆盖你列出的全部 35 道菜；重复出现的主要是适合作配菜的几道家常菜。点击菜名可查看原料。</p>
+    <div class="menu-tabs"><button class="menu-tab active" data-menu="0">版本 A｜均衡家常</button><button class="menu-tab " data-menu="1">版本 B｜换口味</button><button class="menu-tab " data-menu="2">版本 C｜继续轮换</button></div>
+    <div class="menu-panel active" data-panel="0"><div class="day-card"><div class="day">周一</div><div class="day-dishes"><button class="inline-dish" data-dish="葱烤大排">葱烤大排</button><button class="inline-dish" data-dish="香菇青菜">香菇青菜</button><button class="inline-dish" data-dish="番茄炒蛋">番茄炒蛋</button></div></div><div class="day-card"><div class="day">周二</div><div class="day-dishes"><button class="inline-dish" data-dish="清蒸鲈鱼">清蒸鲈鱼</button><button class="inline-dish" data-dish="家常香菇烧豆腐">家常香菇烧豆腐</button><button class="inline-dish" data-dish="西葫芦炒鸡蛋">西葫芦炒鸡蛋</button></div></div><div class="day-card"><div class="day">周三</div><div class="day-dishes"><button class="inline-dish" data-dish="梅花肉烧萝卜">梅花肉烧萝卜</button><button class="inline-dish" data-dish="西兰花炒蘑菇">西兰花炒蘑菇</button><button class="inline-dish" data-dish="芹菜炒虾仁">芹菜炒虾仁</button></div></div><div class="day-card"><div class="day">周四</div><div class="day-dishes"><button class="inline-dish" data-dish="青椒肉丝">青椒肉丝</button><button class="inline-dish" data-dish="花菜烧豆腐">花菜烧豆腐</button><button class="inline-dish" data-dish="番茄花菜">番茄花菜</button></div></div><div class="day-card"><div class="day">周五</div><div class="day-dishes"><button class="inline-dish" data-dish="红烧鸡翅">红烧鸡翅</button><button class="inline-dish" data-dish="豇豆烧豆腐">豇豆烧豆腐</button><button class="inline-dish" data-dish="洋葱炒鸡蛋">洋葱炒鸡蛋</button></div></div></div><div class="menu-panel " data-panel="1"><div class="day-card"><div class="day">周一</div><div class="day-dishes"><button class="inline-dish" data-dish="梅花肉烧土豆">梅花肉烧土豆</button><button class="inline-dish" data-dish="西兰花炒虾仁">西兰花炒虾仁</button><button class="inline-dish" data-dish="香菇青菜">香菇青菜</button></div></div><div class="day-card"><div class="day">周二</div><div class="day-dishes"><button class="inline-dish" data-dish="红烧黄鱼">红烧黄鱼</button><button class="inline-dish" data-dish="芹菜香干肉丝">芹菜香干肉丝</button><button class="inline-dish" data-dish="西兰花炒鸡蛋">西兰花炒鸡蛋</button></div></div><div class="day-card"><div class="day">周三</div><div class="day-dishes"><button class="inline-dish" data-dish="茭白毛豆肉丝">茭白毛豆肉丝</button><button class="inline-dish" data-dish="西葫芦炒虾仁">西葫芦炒虾仁</button><button class="inline-dish" data-dish="番茄炒蛋">番茄炒蛋</button></div></div><div class="day-card"><div class="day">周四</div><div class="day-dishes"><button class="inline-dish" data-dish="番茄黑鱼片">番茄黑鱼片</button><button class="inline-dish" data-dish="肉末豇豆">肉末豇豆</button><button class="inline-dish" data-dish="家常香菇烧豆腐">家常香菇烧豆腐</button></div></div><div class="day-card"><div class="day">周五</div><div class="day-dishes"><button class="inline-dish" data-dish="花菜炒梅花肉片">花菜炒梅花肉片</button><button class="inline-dish" data-dish="肉末烧冬瓜">肉末烧冬瓜</button><button class="inline-dish" data-dish="番茄花菜">番茄花菜</button></div></div></div><div class="menu-panel " data-panel="2"><div class="day-card"><div class="day">周一</div><div class="day-dishes"><button class="inline-dish" data-dish="梅花肉烧豆角">梅花肉烧豆角</button><button class="inline-dish" data-dish="西兰花炒鸡蛋">西兰花炒鸡蛋</button><button class="inline-dish" data-dish="香菇青菜">香菇青菜</button></div></div><div class="day-card"><div class="day">周二</div><div class="day-dishes"><button class="inline-dish" data-dish="红烧鲈鱼">红烧鲈鱼</button><button class="inline-dish" data-dish="肉末豆腐">肉末豆腐</button><button class="inline-dish" data-dish="番茄花菜">番茄花菜</button></div></div><div class="day-card"><div class="day">周三</div><div class="day-dishes"><button class="inline-dish" data-dish="萝卜炖牛腩">萝卜炖牛腩</button><button class="inline-dish" data-dish="洋葱炒肉丝">洋葱炒肉丝</button><button class="inline-dish" data-dish="西葫芦炒鸡蛋">西葫芦炒鸡蛋</button></div></div><div class="day-card"><div class="day">周四</div><div class="day-dishes"><button class="inline-dish" data-dish="肉末茄子">肉末茄子</button><button class="inline-dish" data-dish="西葫芦炒肉片">西葫芦炒肉片</button><button class="inline-dish" data-dish="家常香菇烧豆腐">家常香菇烧豆腐</button></div></div><div class="day-card"><div class="day">周五</div><div class="day-dishes"><button class="inline-dish" data-dish="肉末粉丝">肉末粉丝</button><button class="inline-dish" data-dish="肉末炒四季豆">肉末炒四季豆</button><button class="inline-dish" data-dish="番茄炒蛋">番茄炒蛋</button></div></div></div>
+  </section>
+</main>
+
+<footer>可直接保存这个 HTML 文件，以后在浏览器里打开使用。</footer>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-card">
+    <div class="modal-top">
+      <h3 id="modal-title"></h3>
+      <button class="close" id="close">×</button>
+    </div>
+    <div class="badge" id="modal-type"></div>
+    <ul id="modal-list"></ul>
+  </div>
+</div>
+
+<script>
+const dishes = {"葱烤大排": {"type": "主菜", "ingredients": ["猪大排", "葱", "姜", "生抽", "老抽", "糖", "料酒"]}, "梅花肉烧萝卜": {"type": "主菜", "ingredients": ["梅花肉", "白萝卜", "姜", "葱", "生抽", "老抽", "糖"]}, "梅花肉烧土豆": {"type": "主菜", "ingredients": ["梅花肉", "土豆", "洋葱", "姜", "生抽", "老抽", "糖"]}, "梅花肉烧豆角": {"type": "主菜", "ingredients": ["梅花肉", "豆角", "蒜", "生抽", "老抽"]}, "花菜炒梅花肉片": {"type": "主菜", "ingredients": ["梅花肉", "花菜", "蒜", "生抽", "蚝油"]}, "芹菜香干肉丝": {"type": "主菜", "ingredients": ["猪肉丝", "芹菜", "香干", "生抽", "淀粉"]}, "青椒肉丝": {"type": "主菜", "ingredients": ["猪肉丝", "青椒", "生抽", "淀粉"]}, "茭白毛豆肉丝": {"type": "主菜", "ingredients": ["猪肉丝", "茭白", "毛豆", "生抽", "淀粉"]}, "洋葱炒肉丝": {"type": "主菜", "ingredients": ["猪肉丝", "洋葱", "生抽", "淀粉"]}, "西葫芦炒肉片": {"type": "主菜", "ingredients": ["猪肉片", "西葫芦", "蒜", "生抽"]}, "肉末豆腐": {"type": "主菜", "ingredients": ["猪肉末", "豆腐", "葱", "姜", "生抽"]}, "肉末茄子": {"type": "主菜", "ingredients": ["猪肉末", "茄子", "蒜", "生抽", "蚝油"]}, "肉末豇豆": {"type": "主菜", "ingredients": ["猪肉末", "豇豆", "蒜", "生抽"]}, "肉末粉丝": {"type": "主菜", "ingredients": ["猪肉末", "粉丝", "葱", "姜", "生抽"]}, "肉末炒四季豆": {"type": "主菜", "ingredients": ["猪肉末", "四季豆", "蒜", "生抽"]}, "肉末烧冬瓜": {"type": "主菜", "ingredients": ["猪肉末", "冬瓜", "姜", "葱", "生抽"]}, "萝卜炖牛腩": {"type": "主菜", "ingredients": ["牛腩", "白萝卜", "姜", "葱", "料酒"]}, "红烧鸡翅": {"type": "主菜", "ingredients": ["鸡翅", "姜", "葱", "生抽", "老抽", "糖", "料酒"]}, "清蒸鲈鱼": {"type": "主菜", "ingredients": ["鲈鱼", "葱", "姜", "蒸鱼豉油"]}, "红烧鲈鱼": {"type": "主菜", "ingredients": ["鲈鱼", "葱", "姜", "生抽", "老抽", "糖"]}, "红烧黄鱼": {"type": "主菜", "ingredients": ["黄鱼", "葱", "姜", "生抽", "老抽", "糖"]}, "番茄黑鱼片": {"type": "主菜", "ingredients": ["黑鱼片", "番茄", "姜", "葱", "淀粉"]}, "芹菜炒虾仁": {"type": "主菜", "ingredients": ["虾仁", "芹菜", "姜", "盐"]}, "西兰花炒虾仁": {"type": "主菜", "ingredients": ["虾仁", "西兰花", "蒜", "盐"]}, "西葫芦炒虾仁": {"type": "主菜", "ingredients": ["虾仁", "西葫芦", "蒜", "盐"]}, "番茄炒蛋": {"type": "配菜", "ingredients": ["番茄", "鸡蛋", "葱", "盐"]}, "家常香菇烧豆腐": {"type": "配菜", "ingredients": ["豆腐", "香菇", "葱", "生抽"]}, "香菇青菜": {"type": "配菜", "ingredients": ["香菇", "青菜", "蒜", "盐"]}, "豇豆烧豆腐": {"type": "配菜", "ingredients": ["豇豆", "豆腐", "蒜", "生抽"]}, "花菜烧豆腐": {"type": "配菜", "ingredients": ["花菜", "豆腐", "蒜", "生抽"]}, "番茄花菜": {"type": "配菜", "ingredients": ["番茄", "花菜", "蒜", "盐"]}, "西兰花炒蘑菇": {"type": "配菜", "ingredients": ["西兰花", "蘑菇", "蒜", "盐"]}, "西兰花炒鸡蛋": {"type": "配菜", "ingredients": ["西兰花", "鸡蛋", "盐"]}, "洋葱炒鸡蛋": {"type": "配菜", "ingredients": ["洋葱", "鸡蛋", "盐"]}, "西葫芦炒鸡蛋": {"type": "配菜", "ingredients": ["西葫芦", "鸡蛋", "盐"]}};
+
+document.querySelectorAll('.nav button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.page).classList.add('active');
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+});
+
+document.querySelectorAll('.menu-tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.menu-tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.menu-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelector(`.menu-panel[data-panel="${btn.dataset.menu}"]`).classList.add('active');
+  });
+});
+
+const modal = document.getElementById('modal');
+function openDish(name) {
+  const d = dishes[name];
+  if (!d) return;
+  document.getElementById('modal-title').textContent = name;
+  document.getElementById('modal-type').textContent = d.type;
+  document.getElementById('modal-list').innerHTML = d.ingredients.map(x => `<li>${x}</li>`).join('');
+  modal.classList.add('open');
+}
+document.addEventListener('click', e => {
+  const btn = e.target.closest('[data-dish]');
+  if (btn) openDish(btn.dataset.dish);
+});
+document.getElementById('close').addEventListener('click', () => modal.classList.remove('open'));
+modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('open'); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') modal.classList.remove('open'); });
+</script>
+</body>
+</html>
